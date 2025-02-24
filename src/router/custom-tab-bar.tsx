@@ -1,13 +1,13 @@
 import React, {useRef} from 'react';
 import {View, TouchableOpacity, Animated} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import MoneyIcon from '@src/assets/icons/money';
-import MoneyOutlineIcon from '@src/assets/money-outline';
-import StarIcon from '@src/assets/icons/star';
 import StarOutlineIcon from '@src/assets/icons/star-outline';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import Text from '@src/components/text';
 import classNames from 'classnames';
+import MoneyOutlineIcon from '@src/assets/icons/money-outline';
+import MoneyIcon from '@src/assets/icons/money';
+import StarIcon from '@src/assets/icons/star';
 
 const CustomTabBar = ({state, descriptors, navigation}: BottomTabBarProps) => {
   const {navigate} = useNavigation();

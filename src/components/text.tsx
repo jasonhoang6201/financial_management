@@ -3,7 +3,15 @@ import {Text as RNText, TextProps} from 'react-native';
 
 const Text = (props: TextProps) => {
   return (
-    <RNText className="text-black-primary" style={[props.style]} {...props}>
+    <RNText
+      className="text-white"
+      style={[
+        props.style,
+        {
+          fontFamily: 'Nunito-Regular',
+        },
+      ]}
+      {...props}>
       {props.children}
     </RNText>
   );
