@@ -15,7 +15,7 @@ type Props = {
 };
 
 const ExpenseItem = ({type}: Props) => {
-  const {viewMonth} = useExpenseStore();
+  const {viewMonth, setForceRefresh} = useExpenseStore();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [expense, setExpense] = useState<Expense | null>(null);
   const [showAddNew, setShowAddNew] = useState(false);
@@ -58,6 +58,7 @@ const ExpenseItem = ({type}: Props) => {
     setExpense(current);
     // done: save to mmkv
     saveExpense(current);
+    setForceRefresh(new Date().toISOString());
     setShowAddNew(false);
   };
 
@@ -79,6 +80,7 @@ const ExpenseItem = ({type}: Props) => {
     };
     setExpense(current);
     saveExpense(current);
+    setForceRefresh(new Date().toISOString());
     setShowEdit(null);
   };
 
@@ -90,6 +92,7 @@ const ExpenseItem = ({type}: Props) => {
     };
     setExpense(current);
     saveExpense(current);
+    setForceRefresh(new Date().toISOString());
     setShowEdit(null);
   };
 
@@ -108,6 +111,7 @@ const ExpenseItem = ({type}: Props) => {
     setExpense(current);
     // done: save to mmkv
     saveExpense(current);
+    setForceRefresh(new Date().toISOString());
   };
 
   useEffect(() => {

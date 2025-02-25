@@ -20,11 +20,11 @@ export const deleteExpense = (month: string, type: ExpenseType) => {
   storage.delete(`expense-${month}-${type}`);
 };
 
-// export const getAllExpenses = (): Expense[] => {
-//   return storage.getAllKeys().map(key => ({
-//     expenses: JSON.parse(storage.getString(key) || '{}'),
-//   }));
-// };
+export const getAllExpensesByMonth = (month: string): Expense[] => {
+  return Object.keys(ExpenseType).map(type =>
+    getExpense(month, type as ExpenseType),
+  );
+};
 
 export const deleteAllExpenses = () => {
   storage.clearAll();

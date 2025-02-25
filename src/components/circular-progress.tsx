@@ -12,8 +12,8 @@ interface Props {
 const CircularProgress = ({current, total}: Props) => {
   const [show, setShow] = useState(false);
 
-  const radius = 120;
-  const strokeWidth = 30;
+  const radius = 100;
+  const strokeWidth = 25;
   const normalizedRadius = radius - strokeWidth / 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const progress = current / total;
