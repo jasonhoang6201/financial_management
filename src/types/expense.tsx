@@ -13,7 +13,7 @@ export interface Expense {
   items: {
     name: string;
     amount: number;
-    isChecked: boolean;
+    isChecked: string;
   }[];
 }
 

@@ -49,7 +49,7 @@ const CircularProgress = ({current, total}: Props) => {
       </Svg>
       <TouchableOpacity onLongPress={() => setShow(!show)} className="absolute">
         <Text className="text-[20px] font-bold text-center text-[#FF8F8F]">
-          {show ? formatMoney(current) : `${Math.round(progress * 100)}%`}
+          {show ? `${Math.round(progress * 100)}%` : formatMoney(current)}
         </Text>
       </TouchableOpacity>
     </View>

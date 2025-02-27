@@ -8,12 +8,13 @@ import MaskInput from 'react-native-mask-input';
 import ReactNativeModal from 'react-native-modal';
 import AppInput from '../design-system/input';
 import Text from '../text';
+import moment from 'moment';
 
 type Props = {
   isShow: boolean;
   onClose: () => void;
   onAdd: (data: {name: string; amount: string}) => void;
-  editItem?: {name: string; amount: string; index: number};
+  editItem?: {name: string; amount: string; index: number; isChecked: string};
   onDelete?: (index: number) => void;
 };
 
@@ -35,6 +36,53 @@ const AddExpense = ({isShow, onClose, onAdd, editItem, onDelete}: Props) => {
       setData({name: editItem.name, amount: editItem.amount});
     }
   }, [editItem, isShow]);
+
+  const renderButton = useMemo(() => {
+    if (editItem?.isChecked) {
+      return (
+        <Text className="text-[16px] font-medium text-pink-primary mt-[20px]">
+          <Text className=" text-[16px] font-semibold">Used at: </Text>
+          {moment(editItem.isChecked).format('DD/MM HH:mm')}
+        </Text>
+      );
+    }
+
+    return (
+      <>
+        <TouchableOpacity
+          className={classNames(
+            'bg-pink-primary rounded-[4px] py-[8px] mt-[20px]',
+            {
+              'opacity-20': !canAdd,
+            },
+          )}
+          onPress={() => {
+            onAdd(data);
+            setData({name: '', amount: ''});
+          }}
+          disabled={!canAdd}>
+          <Text className="text-[16px] font-semibold text-white text-center">
+            {editItem ? 'Update' : 'Add'}
+          </Text>
+        </TouchableOpacity>
+
+        {editItem && (
+          <TouchableOpacity
+            className="border border-red-primary rounded-[4px] py-[8px] mt-[20px]"
+            onPress={() => {
+              if (onDelete) {
+                onDelete(editItem.index);
+              }
+            }}>
+            <Text className="text-[16px] font-semibold text-red-primary text-center">
+              Delete
+            </Text>
+          </TouchableOpacity>
+        )}
+      </>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canAdd, editItem]);
 
   return (
     <ReactNativeModal
@@ -61,6 +109,7 @@ const AddExpense = ({isShow, onClose, onAdd, editItem, onDelete}: Props) => {
               placeholderTextColor="#CDCDCD"
               value={data.name}
               onChangeText={text => setData({...data, name: text})}
+              editable={!editItem?.isChecked}
             />
           </View>
 
@@ -76,38 +125,10 @@ const AddExpense = ({isShow, onClose, onAdd, editItem, onDelete}: Props) => {
             placeholderTextColor="#CDCDCD"
             value={data.amount}
             onChangeText={text => setData({...data, amount: text})}
+            editable={!editItem?.isChecked}
           />
 
-          <TouchableOpacity
-            className={classNames(
-              'bg-pink-primary rounded-[4px] py-[8px] mt-[20px]',
-              {
-                'opacity-20': !canAdd,
-              },
-            )}
-            onPress={() => {
-              onAdd(data);
-              setData({name: '', amount: ''});
-            }}
-            disabled={!canAdd}>
-            <Text className="text-[16px] font-semibold text-white text-center">
-              {editItem ? 'Update' : 'Add'}
-            </Text>
-          </TouchableOpacity>
-
-          {editItem && (
-            <TouchableOpacity
-              className="border border-red-primary rounded-[4px] py-[8px] mt-[20px]"
-              onPress={() => {
-                if (onDelete) {
-                  onDelete(editItem.index);
-                }
-              }}>
-              <Text className="text-[16px] font-semibold text-red-primary text-center">
-                Delete
-              </Text>
-            </TouchableOpacity>
-          )}
+          {renderButton}
         </KeyboardAwareScrollView>
       </View>
     </ReactNativeModal>

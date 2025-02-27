@@ -43,7 +43,7 @@ const ExpenseItem = ({type}: Props) => {
         {
           name: data.name,
           amount: parseFloat(data.amount?.replace(/,/g, '')),
-          isChecked: false,
+          isChecked: moment().toISOString(),
         },
       ],
     };
@@ -95,7 +95,10 @@ const ExpenseItem = ({type}: Props) => {
       items:
         expense?.items?.map((item, i) => {
           if (i === index) {
-            return {...item, isChecked: !item.isChecked};
+            return {
+              ...item,
+              isChecked: item.isChecked ? '' : moment().toISOString(),
+            };
           }
           return item;
         }) ?? [],
@@ -139,7 +142,7 @@ const ExpenseItem = ({type}: Props) => {
           month: previousMonth,
           items: previousData.items?.map(item => ({
             ...item,
-            isChecked: false,
+            isChecked: '',
           })),
         };
         setExpense(temp);
@@ -151,7 +154,7 @@ const ExpenseItem = ({type}: Props) => {
           month: viewMonth,
           items: template.map(item => ({
             ...item,
-            isChecked: false,
+            isChecked: '',
           })),
         };
       }
@@ -290,6 +293,7 @@ const ExpenseItem = ({type}: Props) => {
         editItem={{
           name: expense?.items?.[showEdit ?? 0]?.name ?? '',
           amount: expense?.items?.[showEdit ?? 0]?.amount.toString() ?? '',
+          isChecked: expense?.items?.[showEdit ?? 0]?.isChecked ?? '',
           index: showEdit ?? 0,
         }}
         onDelete={onDelete}

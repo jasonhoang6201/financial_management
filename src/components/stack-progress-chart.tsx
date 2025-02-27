@@ -73,6 +73,8 @@ const StackProgressChart = ({data}: Props) => {
       barWidth={width / 8}
       spacing={10}
       yAxisLabelWidth={0}
+      xAxisColor="#CDCDCD"
+      yAxisColor="#CDCDCD"
     />
   );
 };
