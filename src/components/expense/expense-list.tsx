@@ -1,16 +1,17 @@
 import {ExpenseType} from '@src/types/expense';
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {View} from 'react-native';
+import {NestableScrollContainer} from 'react-native-draggable-flatlist';
 import ExpenseItem from './expense-item';
 
 const ExpenseList = () => {
   return (
     <View className="px-[8px] mt-[16px] flex-1">
-      <FlatList
-        className="flex-1"
-        data={Object.values(ExpenseType)}
-        renderItem={({item}) => <ExpenseItem type={item} />}
-      />
+      <NestableScrollContainer>
+        {Object.keys(ExpenseType).map(type => (
+          <ExpenseItem key={type} type={type as ExpenseType} />
+        ))}
+      </NestableScrollContainer>
     </View>
   );
 };

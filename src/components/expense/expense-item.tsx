@@ -14,6 +14,10 @@ import moment from 'moment';
 import React, {useEffect, useMemo, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import {
+  NestableDraggableFlatList,
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
 import MaskInput from 'react-native-mask-input';
 import Svg, {Path} from 'react-native-svg';
 import Text from '../text';
@@ -100,6 +104,16 @@ const ExpenseItem = ({type}: Props) => {
     // done: save to mmkv
     saveExpense(current);
     setForceRefresh(new Date().toISOString());
+  };
+
+  const onDragEnd = (params: any) => {
+    const current: Expense = {
+      type: type,
+      month: viewMonth,
+      items: params.data,
+    };
+    setExpense(current);
+    saveExpense(current);
   };
 
   useEffect(() => {
@@ -193,54 +207,63 @@ const ExpenseItem = ({type}: Props) => {
           </Text>
         )}
 
-        {!!expense?.items?.length &&
-          (expense?.items?.length ?? 0) > 0 &&
-          expense?.items?.map((item, index) => (
-            <View
-              key={index}
-              className={classNames('flex-row justify-between p-[8px]', {
-                'border-b': index !== expense?.items.length - 1,
-              })}
-              style={{
-                borderColor: faintBackgroundColor[type],
-              }}>
-              <TouchableOpacity
-                className="flex-1"
-                onPress={() => setShowEdit(index)}>
-                <Text className="text-[14px] font-medium">{item.name}</Text>
-              </TouchableOpacity>
-              <MaskInput
-                mask={vndMask}
-                placeholder="XXX,XXX"
-                keyboardType="numeric"
-                className="w-[120px] px-[8px] h-[32px] text-[18px] border rounded-[4px] mx-[16px] text-white font-medium"
-                style={{
-                  backgroundColor: faintBackgroundColor[type],
-                  borderColor: faintBackgroundColor[type],
-                }}
-                textAlign="right"
-                numberOfLines={1}
-                inputMode="numeric"
-                placeholderTextColor="#CDCDCD"
-                editable={false}
-                value={Number(item.amount).toLocaleString('en-US')}
-              />
+        <NestableDraggableFlatList
+          data={expense?.items ?? []}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
+          onDragEnd={onDragEnd}
+          renderItem={({item, getIndex, drag, isActive}) => {
+            const index = getIndex() ?? 0;
+            return (
+              <ScaleDecorator activeScale={1.05}>
+                <View
+                  className={classNames('flex-row justify-between p-[8px]', {
+                    'border-b': index !== (expense?.items?.length ?? 0) - 1,
+                  })}
+                  style={{
+                    borderColor: faintBackgroundColor[type],
+                  }}>
+                  <TouchableOpacity
+                    onLongPress={drag}
+                    disabled={isActive}
+                    className="flex-1"
+                    onPress={() => setShowEdit(index)}>
+                    <Text className="text-[14px] font-medium">{item.name}</Text>
+                  </TouchableOpacity>
+                  <MaskInput
+                    mask={vndMask}
+                    placeholder="XXX,XXX"
+                    keyboardType="numeric"
+                    className="w-[120px] px-[8px] h-[32px] text-[18px] border rounded-[4px] mx-[16px] text-white font-medium"
+                    style={{
+                      backgroundColor: faintBackgroundColor[type],
+                      borderColor: faintBackgroundColor[type],
+                    }}
+                    textAlign="right"
+                    numberOfLines={1}
+                    inputMode="numeric"
+                    placeholderTextColor="#CDCDCD"
+                    editable={false}
+                    value={Number(item.amount).toLocaleString('en-US')}
+                  />
 
-              <TouchableOpacity
-                className={classNames(
-                  'w-[40px] h-[24px] mt-[4px] rounded-full items-center justify-center',
-                  {
-                    'bg-white': !item.isChecked,
-                    'bg-green-primary': item.isChecked,
-                  },
-                )}
-                onPress={() => onCheck(index)}>
-                <Svg viewBox="0 0 24 24" width={18} height={18}>
-                  <Path d="M 19.980469 5.9902344 A 1.0001 1.0001 0 0 0 19.292969 6.2929688 L 9 16.585938 L 5.7070312 13.292969 A 1.0001 1.0001 0 1 0 4.2929688 14.707031 L 8.2929688 18.707031 A 1.0001 1.0001 0 0 0 9.7070312 18.707031 L 20.707031 7.7070312 A 1.0001 1.0001 0 0 0 19.980469 5.9902344 z" />
-                </Svg>
-              </TouchableOpacity>
-            </View>
-          ))}
+                  <TouchableOpacity
+                    className={classNames(
+                      'w-[40px] h-[24px] mt-[4px] rounded-full items-center justify-center',
+                      {
+                        'bg-white': !item.isChecked,
+                        'bg-green-primary': item.isChecked,
+                      },
+                    )}
+                    onPress={() => onCheck(index)}>
+                    <Svg viewBox="0 0 24 24" width={18} height={18}>
+                      <Path d="M 19.980469 5.9902344 A 1.0001 1.0001 0 0 0 19.292969 6.2929688 L 9 16.585938 L 5.7070312 13.292969 A 1.0001 1.0001 0 1 0 4.2929688 14.707031 L 8.2929688 18.707031 A 1.0001 1.0001 0 0 0 9.7070312 18.707031 L 20.707031 7.7070312 A 1.0001 1.0001 0 0 0 19.980469 5.9902344 z" />
+                    </Svg>
+                  </TouchableOpacity>
+                </View>
+              </ScaleDecorator>
+            );
+          }}
+        />
 
         <TouchableOpacity
           className="p-[8px] mx-[8px] rounded-[8px] mb-[8px]"
