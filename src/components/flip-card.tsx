@@ -41,7 +41,6 @@ const FlipCard = ({
 
   // card flip animation
   const flipCard = () => {
-    console.info('flipCard', isFlipped);
     if (isFlipped) {
       // animate back to the front side
       Animated.spring(flipAnimation, {

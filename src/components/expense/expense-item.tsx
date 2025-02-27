@@ -1,5 +1,6 @@
 import {getExpense, saveExpense} from '@src/mmkv/expense';
 import useExpenseStore from '@src/store/expense';
+import {getTemplate} from '@src/template/expense';
 import {
   backgroundColor,
   borderColor,
@@ -9,6 +10,7 @@ import {
 } from '@src/types/expense';
 import {vndMask} from '@src/utils/money';
 import classNames from 'classnames';
+import moment from 'moment';
 import React, {useEffect, useMemo, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -102,8 +104,45 @@ const ExpenseItem = ({type}: Props) => {
 
   useEffect(() => {
     const data = getExpense(viewMonth, type);
-    if (data) {
+    if (data && Object.keys(data).length > 0) {
       setExpense(data);
+    } else {
+      // get previous month
+      // if found, use the template of previous month
+      // else, use the template
+      // if type is Other, don't need to populate data
+      if (type === ExpenseType.Other) {
+        return;
+      }
+      const previousMonth = moment(viewMonth)
+        .subtract(1, 'month')
+        .format('YYYY-MM');
+      const previousData = getExpense(previousMonth, type);
+      let temp: Expense;
+      if (previousData && Object.keys(previousData).length > 0) {
+        temp = {
+          type: type,
+          month: previousMonth,
+          items: previousData.items?.map(item => ({
+            ...item,
+            isChecked: false,
+          })),
+        };
+        setExpense(temp);
+        saveExpense(temp);
+      } else {
+        const template = getTemplate(type);
+        temp = {
+          type: type,
+          month: viewMonth,
+          items: template.map(item => ({
+            ...item,
+            isChecked: false,
+          })),
+        };
+      }
+      setExpense(temp);
+      saveExpense(temp);
     }
   }, [viewMonth, type]);
 

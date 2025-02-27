@@ -16,7 +16,7 @@ const Calendar = () => {
       <TouchableOpacity
         className="flex-row items-center"
         onPress={() => setShowCalendar(true)}>
-        <Text className="text-[14px] leading-[16px] font-semibold ml-[8px] text-pink-primary">
+        <Text className="text-[14px] leading-[16px] font-semibold ml-[16px] text-pink-primary">
           {moment(viewMonth).format('MMM, YYYY')}
         </Text>
         <AngleDownIcon />

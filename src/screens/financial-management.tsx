@@ -60,6 +60,10 @@ const FinancialManagement = () => {
     });
   }, [expenses]);
 
+  console.info('expenses', expenses);
+  console.info('totalAmount', totalAmount);
+  console.info('totalCheckedAmount', totalCheckedAmount);
+
   return (
     <View className="p-[8px] bg-black-primary flex-1 pt-[16px]">
       <FlipCard

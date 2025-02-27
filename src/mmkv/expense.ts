@@ -29,3 +29,9 @@ export const getAllExpensesByMonth = (month: string): Expense[] => {
 export const deleteAllExpenses = () => {
   storage.clearAll();
 };
+
+export const deleteAllExpensesByMonth = (month: string) => {
+  Object.keys(ExpenseType).forEach(type => {
+    storage.delete(`expense-${month}-${type}`);
+  });
+};
