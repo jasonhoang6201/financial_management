@@ -1,6 +1,13 @@
 import {getExpense, saveExpense} from '@src/mmkv/expense';
 import useExpenseStore from '@src/store/expense';
-import {Expense, ExpenseType} from '@src/types/expense';
+import {
+  backgroundColor,
+  borderColor,
+  Expense,
+  ExpenseType,
+  faintBackgroundColor,
+} from '@src/types/expense';
+import {vndMask} from '@src/utils/money';
 import classNames from 'classnames';
 import React, {useEffect, useMemo, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
@@ -20,27 +27,6 @@ const ExpenseItem = ({type}: Props) => {
   const [expense, setExpense] = useState<Expense | null>(null);
   const [showAddNew, setShowAddNew] = useState(false);
   const [showEdit, setShowEdit] = useState<number | null>(null);
-
-  const borderColor = {
-    [ExpenseType.Meo]: '#FFD3B6',
-    [ExpenseType.Petroleum]: '#C3A7FF',
-    [ExpenseType.Company]: '#7FC8A9',
-    [ExpenseType.Other]: '#FF6F61',
-  };
-
-  const backgroundColor = {
-    [ExpenseType.Meo]: '#FFE8DA', // Lighter peach
-    [ExpenseType.Petroleum]: '#E8DAFF', // Lighter purple
-    [ExpenseType.Company]: '#D6F1E4', // Lighter green
-    [ExpenseType.Other]: '#FFC7C2', // Lighter red
-  };
-
-  const faintBackgroundColor = {
-    [ExpenseType.Meo]: '#FFE8DA50', // Lighter peach
-    [ExpenseType.Petroleum]: '#E8DAFF80', // Lighter purple
-    [ExpenseType.Company]: '#D6F1E480', // Lighter green
-    [ExpenseType.Other]: '#FFC7C280', // Lighter red
-  };
 
   const onAdd = (data: {name: string; amount: string}) => {
     const current: Expense = {
@@ -185,19 +171,7 @@ const ExpenseItem = ({type}: Props) => {
                 <Text className="text-[14px] font-medium">{item.name}</Text>
               </TouchableOpacity>
               <MaskInput
-                mask={[
-                  /\d/,
-                  /\d/,
-                  /\d/,
-                  ',',
-                  /\d/,
-                  /\d/,
-                  /\d/,
-                  ',',
-                  /\d/,
-                  /\d/,
-                  /\d/,
-                ]}
+                mask={vndMask}
                 placeholder="XXX,XXX"
                 keyboardType="numeric"
                 className="w-[120px] px-[8px] h-[32px] text-[18px] border rounded-[4px] mx-[16px] text-white font-medium"
@@ -210,7 +184,7 @@ const ExpenseItem = ({type}: Props) => {
                 inputMode="numeric"
                 placeholderTextColor="#CDCDCD"
                 editable={false}
-                value={item.amount.toString()}
+                value={Number(item.amount).toLocaleString('en-US')}
               />
 
               <TouchableOpacity

@@ -1,12 +1,13 @@
+import CloseIcon from '@src/assets/icons/close-icon';
+import {vndMask} from '@src/utils/money';
+import classNames from 'classnames';
 import React, {useEffect, useMemo, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
-import Text from '../text';
-import ReactNativeModal from 'react-native-modal';
-import CloseIcon from '@src/assets/icons/close-icon';
-import AppInput from '../design-system/input';
-import MaskInput from 'react-native-mask-input';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import classNames from 'classnames';
+import MaskInput from 'react-native-mask-input';
+import ReactNativeModal from 'react-native-modal';
+import AppInput from '../design-system/input';
+import Text from '../text';
 
 type Props = {
   isShow: boolean;
@@ -65,19 +66,7 @@ const AddExpense = ({isShow, onClose, onAdd, editItem, onDelete}: Props) => {
 
           <Text className="text-[14px] font-semibold mt-[20px]">Amount</Text>
           <MaskInput
-            mask={[
-              /\d/,
-              /\d/,
-              /\d/,
-              ',',
-              /\d/,
-              /\d/,
-              /\d/,
-              ',',
-              /\d/,
-              /\d/,
-              /\d/,
-            ]}
+            mask={vndMask}
             placeholder="XXX,XXX"
             keyboardType="numeric"
             className="mt-[6px] border border-pink-primary rounded-[4px] text-[16px] text-white p-[8px] h-[40px] text-left"
